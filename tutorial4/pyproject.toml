@@ -1,0 +1,16 @@
+[project]
+name = "tutorial4"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.pytest.ini_options]
+# Lets tests do `from src.<module> import ...` exactly as the book writes it
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+]

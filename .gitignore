@@ -1,0 +1,19 @@
+# Created by uv sync, pytest and coverage
+.venv/
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor settings
+.idea/
+.vscode/
+
+# Instructor-only materials (marking solutions and demo scripts)
+*solution*
+*SOLUTION*
+LAB_SCRIPT.md
+**/LAB_SCRIPT.md
+*temp*
+
+chapter4/
