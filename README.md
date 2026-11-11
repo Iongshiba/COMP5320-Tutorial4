@@ -1,138 +1,134 @@
-# Chapter 4: Software Quality & Testing (setup before class)
+# Tutorial 4: Lab Guide
 
-Please do this **before the lesson**. It takes about 10 minutes and needs an internet connection.
-In class we'll use the time for testing, not installing.
+## 1. Setup Environment
 
-We're following *Agentic Software Engineering: A Practical Guide for the AI-Native Engineer*:
-
-- Lecture: <https://book.agentic-swe.dev/chapter_4.html>
-- Lab: <https://book.agentic-swe.dev/tutorial_4.html>
-
-## What's in this repo
-
-```
-chapter4-software-testing/
-├── chapter4/      lecture examples: src/calculator.py and its tests
-└── tutorial4/     the lab: src/tax.py is the code you'll test
-    └── tests/     empty for now; you'll write test_tax.py here in Part A
-```
-
-Each of the two folders is its own small Python project. You set up each one separately.
-
-## 1. Install git and uv
-
-[uv](https://docs.astral.sh/uv/) installs Python, pytest and pytest-cov for you, so you
-**don't need to install Python yourself.**
-
-**Windows** (PowerShell):
-
-```powershell
-winget install --id Git.Git -e
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-**macOS** (Terminal): run `git --version`. If git is missing, macOS offers to install it, so
-accept. Then:
+Open your terminal, navigate into `tutorial4`, and install the dependencies:
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-**Linux**: install git with your package manager if `git --version` doesn't work, then run the
-same `curl` command as macOS.
-
-Then **close the terminal and open a new one**, and check:
-
-```
-git --version
-uv --version
-```
-
-If you already had uv, update it with `uv self update`. If you installed it with Homebrew or
-winget, use `brew upgrade uv` or `winget upgrade astral-sh.uv` instead.
-
-## 2. Get the code and set up both projects
-
-Open a terminal in the folder where you keep your coursework (your Desktop is fine), then run:
-
-```
-git clone https://github.com/phnam05/chapter4-software-testing.git
-cd chapter4-software-testing/tutorial4
-uv sync
-cd ../chapter4
+cd tutorial4
 uv sync
 ```
 
-The first `uv sync` may take a minute. It downloads Python 3.14 (or newer) if you don't have
-it, creates a `.venv` folder inside the project, and installs pytest 9.1.1 and pytest-cov 7.1.0.
-
-> **Can't install git?** On the [repo page](https://github.com/phnam05/chapter4-software-testing),
-> click **Code → Download ZIP** and unzip it. The folder will be called
-> `chapter4-software-testing-main`. `cd` into it and continue from `cd tutorial4`.
-
-## 3. Check that it works
-
-From inside `tutorial4`:
-
+Verify the setup:
+```bash
+uv run pytest --version
 ```
-uv run python -c "from src.tax import calculate_deduction; print(calculate_deduction(15_000, 40, False, False))"
+Expected: prints `pytest 9.1.1` with plugin `pytest-cov-7.1.0`.
+
+---
+
+## 2. Quick Reference: Rules & Assertions
+
+### Tax Rules (`src/tax.py`)
+- `income < 0` $\rightarrow$ raises `ValueError("Income cannot be negative")`
+- `income <= 18_200` $\rightarrow$ `+$700`
+- `18_200 < income <= 37_000` $\rightarrow$ `+$300`
+- `income > 37_000` $\rightarrow$ `+$0`
+- `age >= 67` $\rightarrow$ `+$400`
+- `has_spouse == True` $\rightarrow$ `+$200`
+- `disabled == True` $\rightarrow$ `+$600`
+
+### Unittest Assertions
+- `self.assertEqual(result, expected)`
+- `self.assertAlmostEqual(result, 1900.0, places=2)`
+- `with self.assertRaisesRegex(ValueError, "cannot be negative"):`
+
+---
+
+## 3. Tasks & Expected Outputs
+
+File to edit: `tutorial4/tests/test_tax.py`
+
+### Part A: Initial Test Suite (TODO 1 to 5)
+
+Implement TODO 1 through 5 in `tests/test_tax.py` following the Arrange–Act–Assert pattern.
+
+**Command to run:**
+```bash
+uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" -v
 ```
 
-should print `700.0`, and
-
-```
-uv run pytest -VV
-```
-
-should print `This is pytest version 9.1.1` and list `pytest-cov-7.1.0` under
-*registered third-party plugins*.
-
-From inside `chapter4`:
-
-```
-uv run python -c "from src.calculator import divide; print(divide(10, 2))"
+**Expected Output:**
+```text
+tests/test_tax.py::TestCalculateDeduction::test_no_supplements_above_mid_income PASSED
+tests/test_tax.py::TestCalculateDeduction::test_full_low_income_supplement PASSED
+tests/test_tax.py::TestCalculateDeduction::test_senior_supplement PASSED
+tests/test_tax.py::TestCalculateDeduction::test_spouse_offset PASSED
+tests/test_tax.py::TestCalculateDeduction::test_disability_supplement PASSED
+tests/test_tax.py::TestCalculateDeduction::test_all_supplements_combined PASSED
+============================== 6 passed in 0.XXs ==============================
 ```
 
-should print `5.0`.
+---
 
-If all three checks give the expected output, you're ready for class.
+### Part B: Measure and Close Coverage Gaps (TODO 6 & 7)
 
-## Running the book's commands
+#### Step 1: Statement Coverage
+Measures which statements in `src/tax.py` are executed.
 
-The book writes commands like `pytest tests/test_tax.py -v`. Type them with **`uv run` in
-front**, from inside the project folder (`tutorial4` for the lab):
-
+**Command to run:**
+```bash
+uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" --cov=src --cov-report=term-missing -q
 ```
-uv run pytest tests/test_tax.py -v
+
+**Expected Output:**
+```text
+Name         Stmts   Miss  Cover   Missing
+------------------------------------------
+src/tax.py      18      2    89%   27, 34
+------------------------------------------
+TOTAL           18      2    89%
+```
+- Lines **27** (`raise ValueError`) and **34** (`deduction += 300.0`) are never executed.
+
+#### Step 2: Branch Coverage
+Checks whether every decision condition was exercised in **both** True and False directions.
+
+**Command to run:**
+```bash
+uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" --cov=src --cov-branch --cov-report=term-missing -q
+```
+
+**Expected Output:**
+```text
+Name         Stmts   Miss Branch BrPart  Cover   Missing
+--------------------------------------------------------
+src/tax.py      18      2     12      2    87%   27, 34
+--------------------------------------------------------
+TOTAL           18      2     12      2    87%
+```
+- `Branch = 12`: Total decision branches (6 conditions × 2).
+- `BrPart = 2`: Two branches were only executed in one direction.
+
+#### Step 3: Implement Missing Tests (TODO 6 & 7)
+- **TODO 6 (`test_negative_income_raises_value_error`)**: Test `income < 0` using `with self.assertRaisesRegex(ValueError, "cannot be negative"):`.
+- **TODO 7 (`test_mid_income_partial_supplement`)**: Test income between `18_200` and `37_000` (e.g. `25_000.0`) expecting `300.0`.
+
+#### Step 4: Verify 100% Branch Coverage
+**Command to run:**
+```bash
 uv run pytest tests/test_tax.py --cov=src --cov-branch --cov-report=term-missing -q
 ```
 
-`uv run` uses the project's `.venv` automatically, so you never need to "activate" anything.
-In lab Part B, Step 1 (`uv add --dev pytest-cov`) will just confirm that pytest-cov is already
-installed. That's expected.
+**Expected Output:**
+```text
+Name         Stmts   Miss Branch BrPart  Cover   Missing
+--------------------------------------------------------
+src/tax.py      18      0     12      0   100%
+--------------------------------------------------------
+TOTAL           18      0     12      0   100%
+8 passed in 0.XXs
+```
 
-On Windows the coverage report prints paths as `src\tax.py` instead of `src/tax.py`. That's
-normal.
+---
 
-## Using an editor (optional)
+## 4. Submission
 
-A terminal is all you need. If you use PyCharm or VS Code:
+From the `tutorial4/` directory, zip `tests/test_tax.py`:
 
-- Open **`tutorial4` itself** as the project, not the `chapter4-software-testing` folder above
-  it. Otherwise `from src.tax import ...` won't be found.
-- Set the project's Python interpreter to the existing **`.venv`** inside that folder, which
-  `uv sync` created. In VS Code, use **Python: Select Interpreter** from the command palette
-  (Ctrl/Cmd+Shift+P).
+```bash
+zip submission.zip tests/test_tax.py
+```
 
-## Troubleshooting
-
-| You see | Fix |
-|---|---|
-| `git` or `uv`: `command not found` / `is not recognized` | Close the terminal and open a new one. If that doesn't help, restart your computer so the new PATH is picked up. |
-| `error: Failed to spawn: pytest` | You're not inside a project folder. `cd` into `tutorial4` (or `chapter4`) first. |
-| `ModuleNotFoundError: No module named 'src'` | Same cause: run commands from inside `tutorial4` or `chapter4`, and start them with `uv run`. |
-| `git clone` or `uv sync` fails while downloading | You need internet the first time. Campus or corporate networks sometimes block downloads, so try from home or a phone hotspot. |
-| PowerShell says running scripts is disabled when you try `.venv\Scripts\Activate.ps1` | You don't need to activate. Use `uv run ...` instead. |
-
-Still stuck? Bring your laptop a few minutes early, along with the exact error message
-(a screenshot is fine).
+**What to submit:**
+- `submission.zip` containing `tests/test_tax.py` (or upload `tests/test_tax.py` directly).
