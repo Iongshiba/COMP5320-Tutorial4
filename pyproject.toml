@@ -7,7 +7,7 @@ dependencies = []
 [tool.pytest.ini_options]
 # Resolve lab imports when commands are run from the repository root.
 pythonpath = ["."]
-testpaths = ["lab01", "lab02", "lab03"]
+testpaths = ["tests"]
 
 [dependency-groups]
 dev = [

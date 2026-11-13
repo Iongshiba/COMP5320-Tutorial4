@@ -17,9 +17,9 @@ def test_login_success(driver):
     time.sleep(2)
     driver.find_element(By.ID, "password").send_keys("secret_sauce")
     time.sleep(2)
-    
     # Act
     driver.find_element(By.ID, "login-button").click()
+    time.sleep(2)
 
     # Assert
     title = driver.find_element(By.CSS_SELECTOR, '[data-test="title"]')

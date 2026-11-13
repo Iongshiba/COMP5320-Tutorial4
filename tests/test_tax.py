@@ -6,16 +6,16 @@ Topic: Unit testing with unittest, Arrange-Act-Assert (AAA), and branch coverage
 Instructions:
 1. Work through the TODOs in order.
 2. In Part A, complete tests 1 to 5 to build your initial test suite.
-   Run: uv run pytest lab01/test_tax.py -k "not test_negative and not test_mid" -v
+   Run: uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" -v
 3. In Part B, run statement coverage, then branch coverage:
-   Statement: uv run pytest lab01/test_tax.py -k "not test_negative and not test_mid" --cov=lab01.tax --cov-report=term-missing
-   Branch:    uv run pytest lab01/test_tax.py -k "not test_negative and not test_mid" --cov=lab01.tax --cov-branch --cov-report=term-missing
+   Statement: uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" --cov=src.tax --cov-report=term-missing
+   Branch:    uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" --cov=src.tax --cov-branch --cov-report=term-missing
 4. Complete tests 6 and 7 to achieve 100% branch coverage!
 """
 
 import unittest
 
-from lab01.tax import calculate_deduction
+from src.tax import calculate_deduction
 
 
 class TestCalculateDeduction(unittest.TestCase):
@@ -104,11 +104,11 @@ class TestCalculateDeduction(unittest.TestCase):
     # PART B: Measure and Close Coverage Gaps
     #
     # 1. Statement coverage:
-    #    uv run pytest lab01/test_tax.py -k "not test_negative and not test_mid" --cov=lab01.tax --cov-report=term-missing
+    #    uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" --cov=src.tax --cov-report=term-missing
     # 2. Branch coverage:
-    #    uv run pytest lab01/test_tax.py -k "not test_negative and not test_mid" --cov=lab01.tax --cov-branch --cov-report=term-missing
+    #    uv run pytest tests/test_tax.py -k "not test_negative and not test_mid" --cov=src.tax --cov-branch --cov-report=term-missing
     #
-    # Notice missing lines 27 and 34 in lab01/tax.py.
+    # Notice missing lines 27 and 34 in src/tax.py.
     # Complete TODO 6 and TODO 7 below to cover those branches!
     # =========================================================================
 
