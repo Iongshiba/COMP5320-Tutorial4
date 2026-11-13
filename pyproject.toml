@@ -5,12 +5,13 @@ requires-python = ">=3.14"
 dependencies = []
 
 [tool.pytest.ini_options]
-# Lets tests do `from src.<module> import ...` exactly as the book writes it
+# Resolve lab imports when commands are run from the repository root.
 pythonpath = ["."]
-testpaths = ["tests"]
+testpaths = ["lab01", "lab02", "lab03"]
 
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
+    "selenium>=4.27,<5",
 ]
