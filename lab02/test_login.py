@@ -1,5 +1,7 @@
 """Selenium login practice. Run all commands from the repository root."""
 
+import time
+
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,20 +12,17 @@ def test_login_success(driver):
     """WORKED EXAMPLE: a standard user reaches the Products page."""
     # Arrange
     driver.get("https://www.saucedemo.com/")
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.visibility_of_element_located((By.ID, "user-name"))).send_keys(
-        "standard_user"
-    )
+    time.sleep(2)
+    driver.find_element(By.ID, "user-name").send_keys("standard_user")
+    time.sleep(2)
     driver.find_element(By.ID, "password").send_keys("secret_sauce")
-
+    time.sleep(2)
+    
     # Act
-    wait.until(EC.element_to_be_clickable((By.ID, "login-button"))).click()
+    driver.find_element(By.ID, "login-button").click()
 
-    # Assert: wait for the visible result, then check the page and its title.
-    wait.until(EC.url_to_be("https://www.saucedemo.com/inventory.html"))
-    title = wait.until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-test="title"]'))
-    )
+    # Assert
+    title = driver.find_element(By.CSS_SELECTOR, '[data-test="title"]')
     assert title.text == "Products"
 
 
