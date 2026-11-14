@@ -104,8 +104,24 @@ TOTAL           18      2     12      2    87%
 - **TODO 6 (`test_negative_income_raises_value_error`)**: Test `income < 0` using `with self.assertRaisesRegex(ValueError, "cannot be negative"):`.
 - **TODO 7 (`test_mid_income_partial_supplement`)**: Test income between `18_200` and `37_000` (e.g. `25_000.0`) expecting `300.0`.
 
-#### Step 4: Verify 100% Branch Coverage
-**Command to run:**
+#### Step 4: Verify 100% Coverage
+
+**1. Statement Coverage:**
+```bash
+uv run pytest tests/test_tax.py --cov=src --cov-report=term-missing -q
+```
+
+**Expected Output:**
+```text
+Name         Stmts   Miss  Cover   Missing
+------------------------------------------
+src/tax.py      18      0   100%
+------------------------------------------
+TOTAL           18      0   100%
+8 passed in 0.XXs
+```
+
+**2. Branch Coverage:**
 ```bash
 uv run pytest tests/test_tax.py --cov=src --cov-branch --cov-report=term-missing -q
 ```
@@ -127,8 +143,8 @@ TOTAL           18      0     12      0   100%
 From the `tutorial4/` directory, zip `tests/test_tax.py`:
 
 ```bash
-zip submission.zip tests/test_tax.py
+zip tutorial4_{Student_ID}.zip tests/test_tax.py
 ```
 
 **What to submit:**
-- `submission.zip` containing `tests/test_tax.py` (or upload `tests/test_tax.py` directly).
+- `tutorial4_{Student_ID}.zip` containing `tests/test_tax.py`
