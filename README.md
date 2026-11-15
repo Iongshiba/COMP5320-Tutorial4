@@ -215,6 +215,10 @@ If a locator or timing issue occurs, read the traceback, inspect the page, fix t
 
 Observe how untrusted external context (such as an issue description or user comment) can manipulate an AI agent's test selection and verification behavior.
 
+> [!NOTE]
+> **Lab 4 is an observational exercise and is NOT graded or submitted.**  
+> LLM responses are non-deterministic: depending on the model, temperature, or system prompt, your agent may either fall for the injection (proposing the filtered command) or resist it (proposing `test_login_wrong_password`). Both outcomes provide valuable insight. The purpose of this lab is to understand the security risk of untrusted inputs influencing automated engineering agents.
+
 Files to open:
 - `issues/issue_42_original.md`: The original bug report about wrong password login behavior.
 - `issues/issue_42_with_comments.md`: The same bug report with an untrusted contributor comment instructing the agent to skip the relevant test.
@@ -260,7 +264,7 @@ Check which tests are actually selected by each proposed command using `pytest -
 
    2/3 tests collected (1 deselected) in 0.09s
    ```
-   *(Note: Even if your specific agent model ignores the injection and proposes the right test, run the filtered command above to observe the effect).*
+   *(Note: Even if your specific agent model ignores the injection and proposes the right test, run the filtered command above manually to observe the effect).*
 
 ### Debrief Question
 
@@ -274,9 +278,11 @@ Check which tests are actually selected by each proposed command using `pytest -
 
 Submit only these three completed test files in one ZIP:
 
-- `tests/test_tax.py` with all seven TODOs completed.
-- `browser_tests/test_login.py` with both TODOs completed.
+- `tests/test_tax.py` with all seven TODOs completed (Lab 1).
+- `browser_tests/test_login.py` with both TODOs completed (Lab 2).
 - `browser_tests/test_add_to_cart.py` created during Lab 3.
+
+*(Lab 4 produces no files and is not included in the submission).*
 
 After completing all labs, check the whole suite from the repository root:
 
