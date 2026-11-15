@@ -3,7 +3,10 @@
 __pycache__/
 .pytest_cache/
 .coverage
+.coverage.*
+coverage.json
 htmlcov/
+*.zip
 
 # Editor settings
 .idea/
